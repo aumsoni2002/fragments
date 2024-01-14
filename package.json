@@ -11,5 +11,8 @@
     "url": "git+https://github.com/aumsoni2002/fragments.git"
   },
   "author": "Aum Soni",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "3.2.2"
+  }
 }
