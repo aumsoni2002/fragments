@@ -1,0 +1,15 @@
+{
+  "name": "fragments",
+  "private": "true",
+  "version": "0.0.1",
+  "description": "This is CCP555NSA Course Project",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aumsoni2002/fragments.git"
+  },
+  "author": "Aum Soni",
+  "license": "UNLICENSED"
+}
