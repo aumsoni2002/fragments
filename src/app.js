@@ -45,6 +45,8 @@ app.get('/', (req, res) => {
     githubUrl: 'https://aumsoni2002/fragments',
     version,
   });
+
+  logger.debug({ environmentVariables: process.env }, 'All Environment Variables');
 });
 
 // Add 404 middleware to handle any requests for resources that can't be found
