@@ -38,6 +38,8 @@
 # # We run our service on port 8080
 # EXPOSE 8080
 
+
+
 # Build stage
 # Use node version 20.10.0 as the base image for building
 FROM node:20.10.0 AS builder

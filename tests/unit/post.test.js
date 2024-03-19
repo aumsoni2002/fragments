@@ -88,7 +88,7 @@ describe('Testing POST /v1/fragments endpoint', () => {
 
     expect(response.status).toEqual(201);
     expect(response.get('content-type')).toBe('application/json; charset=utf-8');
-    // Check for content-length presence and type
     expect(typeof response.get('content-length')).toBe('string');
+    expect(response.get('Location')).toBe(`${process.env.API_URL}/v1/fragments/${response.body.fragment.id}`);
   });
 });

@@ -187,12 +187,6 @@ class Fragment {
       case 'application/json':
         return ['application/json', 'text/plain'];
 
-      case 'image/png':
-      case 'image/jpeg':
-      case 'image/webp':
-      case 'image/gif':
-        return ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
-
       default:
         return null;
     }
@@ -204,16 +198,7 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    const validTypes = [
-      'text/plain',
-      'text/markdown',
-      'text/html',
-      'application/json',
-      'image/png',
-      'image/jpeg',
-      'image/webp',
-      'image/gif',
-    ];
+    const validTypes = ['text/plain', 'text/markdown', 'text/html', 'application/json'];
 
     const parsedType = contentType.parse(value);
     return validTypes.includes(parsedType.type);

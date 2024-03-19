@@ -1,35 +1,137 @@
 // src/routes/api/get.js
 
-/**
- * Get a list of fragments for the current user
- */
-const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
+const { createSuccessResponse, createErrorResponse } = require('../../response');
+const logger = require('../../logger');
+const md = require('markdown-it')();
+const { htmlToText } = require('html-to-text');
 
-module.exports = async (req, res) => {
+// fetching all fragments of a current user
+module.exports.fetchUserFragments = async (req, res, next) => {
+  const userId = req.user;
+  const hasExpand = req.query.expand == 1 ? true : false;
+
+  logger.info({ userId, hasExpand }, `Request received: GET ALL ${req.originalUrl}`);
+
   try {
-    const expand = req.query.expand == 1 ? true : false;
+    const fragments = await Fragment.byUser(userId, hasExpand);
+    const successResponse = createSuccessResponse({ fragments: fragments });
+    logger.debug({ fragments }, 'Fragments retrieved for the user');
+    res.status(200).json(successResponse);
+  } catch (err) {
+    logger.warn({ err }, 'Failed to retrieve user fragments');
+    next(err);
+  }
+};
 
-    const fragmentId = req.params.id;
+// fetching the actual fragment data by Id
+module.exports.fetchFragmentDataById = async (req, res) => {
+  const userId = req.user;
+  const [id, extension] = req.params.id.split('.');
 
-    if (fragmentId != null) {
-      const fragment = await Fragment.byId(req.user, fragmentId);
+  logger.info({ id, userId, extension }, `Request received: GET DATA BY ID ${req.originalUrl}`);
 
-      if (!fragment) {
-        // If fragment with the given ID is not found, return 404 error
-        return res.status(404).json(createErrorResponse(404, 'Fragment not found'));
+  try {
+    const fragment = await Fragment.byId(userId, id);
+    const data = await fragment.getData();
+    logger.debug('Fragment data retrieved');
+
+    // trying to convert data from its own extension to other extension and then return it
+    if (extension != null) {
+      const extensionType = getExtensionContentType(extension);
+
+      if (fragment.formats.includes(extensionType)) {
+        const convertedData = await convertData(data, fragment.mimeType, extension);
+        logger.info('The Fragment data has been converted:', {
+          from: fragment.mimeType,
+          to: extensionType,
+        });
+        res.setHeader('Content-Type', extensionType);
+        res.status(200).send(convertedData);
       } else {
-        return res.status(200).json(createSuccessResponse({ fragment }));
+        const message = `a ${fragment.mimeType} fragment cannot be return as a ${extension}`;
+        const errorResponse = createErrorResponse(415, message);
+        logger.error({ userId, errorResponse }, 'Invalid conversion');
+        res.status(415).json(errorResponse);
       }
     }
-
-    const fragments = await Fragment.byUser(req.user, expand);
-
-    // Send the fragment IDs in the response
-    res.status(200).json(createSuccessResponse({ fragments: fragments }));
-  } catch (error) {
-    // Handle errors
-    console.error('Error fetching fragments:', error);
-    res.status(500).json(createErrorResponse(500, 'Internal Server Error'));
+    // returning raw fragment data with its type as it was not able to converted
+    else {
+      res.setHeader('Content-Type', fragment.type);
+      res.status(200).send(data);
+    }
+  } catch (err) {
+    const errorResponse = createErrorResponse(404, err.message);
+    logger.warn({ id, errorResponse }, 'Failed in retrieving fragment data');
+    res.status(404).json(errorResponse);
   }
+};
+
+// fetching the meta data of a fragment by its id.
+module.exports.fetchFragmentInfoById = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user;
+
+  logger.info({ id, userId }, `Request received: GET INFO BY ID ${req.originalUrl}`);
+
+  try {
+    const fragment = await Fragment.byId(userId, id);
+    logger.info({ fragment }, 'Fragment has been found');
+
+    const successResponse = createSuccessResponse({ fragment: fragment });
+    res.status(200).json(successResponse);
+  } catch (err) {
+    const errorResponse = createErrorResponse(404, err.message);
+
+    logger.error({ errorResponse }, 'Failed in retrieving requested fragment information');
+    res.status(404).json(errorResponse);
+  }
+};
+
+// getting extension as per its respective content type
+const getExtensionContentType = (extension) => {
+  switch (extension) {
+    case 'txt':
+      return 'text/plain';
+    case 'md':
+      return 'text/markdown';
+    case 'html':
+      return 'text/html';
+    case 'json':
+      return 'application/json';
+    default:
+      return null;
+  }
+};
+
+// Converting data from one extension to other extension
+const convertData = async (fragmentData, from, to) => {
+  let convertedData = fragmentData;
+
+  switch (from) {
+    case 'text/markdown':
+      if (to == 'txt') {
+        convertedData = md.render(fragmentData.toString());
+        convertedData = htmlToText(convertedData.toString(), { wordwrap: 150 });
+      }
+      if (to == 'html') {
+        convertedData = md.render(fragmentData.toString());
+      }
+      break;
+
+    case 'text/html':
+      if (to == 'txt') {
+        convertedData = htmlToText(fragmentData.toString(), { wordwrap: 130 });
+      }
+      break;
+
+    case 'application/json':
+      if (to == 'txt') {
+        convertedData = JSON.parse(fragmentData.toString());
+      }
+      break;
+  }
+
+  logger.debug(`Fragment data was successfully converted from ${from} to ${to}`);
+  return Promise.resolve(convertedData);
 };
