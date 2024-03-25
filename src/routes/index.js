@@ -14,6 +14,8 @@ const router = express.Router();
 // Our authentication middleware
 const { authenticate } = require('../auth');
 
+const { hostname } = require('os');
+
 /**
  * Expose all of our API routes on /v1/* to include an API version.
  */
@@ -32,6 +34,8 @@ router.get('/', (req, res) => {
       author,
       githubUrl: 'https://github.com/aumsoni2002/fragments',
       version,
+      // Include the hostname in the response
+      hostname: hostname(),
     })
   );
 });
