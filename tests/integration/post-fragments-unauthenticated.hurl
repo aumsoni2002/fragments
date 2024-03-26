@@ -1,7 +1,6 @@
 # tests/integration/post-fragments-unauthenticated.hurl
 
 # POST /v1/fragments (Unauthenticated User)
-#######################################
 POST http://localhost:8080/v1/fragments
 Content-Type: text/plain
 `This is a fragment!`

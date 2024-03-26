@@ -25,13 +25,11 @@ jsonpath "$.fragment.size" == 19
 url: header "Location"
 
 # GET /v1/fragments/:id
-############################
 GET {{url}}
 [BasicAuth]
 user1@email.com:password1
 
 # 200 Success Response
-###############
 HTTP/1.1 200
 Content-Type: text/plain; charset=utf-8
 Content-Length: 19
