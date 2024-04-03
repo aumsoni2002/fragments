@@ -1,0 +1,108 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:785890584325:task-definition/fragments-task:3",
+    "containerDefinitions": [
+        {
+            "name": "fragments-container",
+            "image": "aumsoni2002/fragments:latest",
+            "cpu": 256,
+            "memoryReservation": 512,
+            "portMappings": [
+                {
+                    "name": "fragments-container-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "AWS_COGNITO_POOL_ID",
+                    "value": "us-east-1_oWvXJTFm1"
+                },
+                {
+                    "name": "PORT",
+                    "value": "80"
+                },
+                {
+                    "name": "LOG_LEVEL",
+                    "value": "debug"
+                },
+                {
+                    "name": "AWS_COGNITO_CLIENT_ID",
+                    "value": "2e2r9199ljt8pmg7t10ahdmtvl"
+                },
+                {
+                    "name": "HTPASSWD_FILE",
+                    "value": "tests/.htpasswd"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/fragments-task",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "fragments-task",
+    "taskRoleArn": "arn:aws:iam::785890584325:role/LabRole",
+    "executionRoleArn": "arn:aws:iam::785890584325:role/LabRole",
+    "networkMode": "awsvpc",
+    "revision": 3,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-04-03T18:40:17.947Z",
+    "registeredBy": "arn:aws:sts::785890584325:assumed-role/voclabs/user3006313=Soni,_Aum_Amitkumar",
+    "tags": []
+}
