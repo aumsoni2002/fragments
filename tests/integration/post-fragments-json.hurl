@@ -34,7 +34,7 @@ user1@email.com:password1
 # 200 Success Response
 HTTP/1.1 200
 Content-Type: application/json
-Content-Length: 47
+Content-Length: 44
 
 [Asserts]
 jsonpath "$.firstName" == "Aum"
