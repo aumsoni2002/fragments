@@ -5,6 +5,7 @@ const { createSuccessResponse, createErrorResponse } = require('../../response')
 const logger = require('../../logger');
 const md = require('markdown-it')();
 const { htmlToText } = require('html-to-text');
+const sharp = require('sharp');
 
 // fetching all fragments of a current user
 module.exports.fetchUserFragments = async (req, res, next) => {
@@ -99,6 +100,14 @@ const getExtensionContentType = (extension) => {
       return 'text/html';
     case 'json':
       return 'application/json';
+    case 'png':
+      return 'image/png';
+    case 'jpg':
+      return 'image/jpeg';
+    case 'webp':
+      return 'image/webp';
+    case 'gif':
+      return 'image/gif';
     default:
       return null;
   }
@@ -128,6 +137,53 @@ const convertData = async (fragmentData, from, to) => {
     case 'application/json':
       if (to == 'txt') {
         convertedData = JSON.parse(fragmentData.toString());
+      }
+      break;
+    case 'image/png':
+      if (to == 'jpg') {
+        convertedData = await sharp(fragmentData).jpeg().toBuffer();
+      }
+      if (to == 'webp') {
+        convertedData = await sharp(fragmentData).webp().toBuffer();
+      }
+      if (to == 'gif') {
+        convertedData = await sharp(fragmentData).gif().toBuffer();
+      }
+      break;
+
+    case 'image/jpeg':
+      if (to == 'png') {
+        convertedData = await sharp(fragmentData).png().toBuffer();
+      }
+      if (to == 'webp') {
+        convertedData = await sharp(fragmentData).webp().toBuffer();
+      }
+      if (to == 'gif') {
+        convertedData = await sharp(fragmentData).gif().toBuffer();
+      }
+      break;
+
+    case 'image/webp':
+      if (to == 'png') {
+        convertedData = await sharp(fragmentData).png().toBuffer();
+      }
+      if (to == 'jpg') {
+        convertedData = await sharp(fragmentData).jpeg().toBuffer();
+      }
+      if (to == 'gif') {
+        convertedData = await sharp(fragmentData).gif().toBuffer();
+      }
+      break;
+
+    case 'image/gif':
+      if (to == 'png') {
+        convertedData = await sharp(fragmentData).png().toBuffer();
+      }
+      if (to == 'jpg') {
+        convertedData = await sharp(fragmentData).jpeg().toBuffer();
+      }
+      if (to == 'webp') {
+        convertedData = await sharp(fragmentData).webp().toBuffer();
       }
       break;
   }

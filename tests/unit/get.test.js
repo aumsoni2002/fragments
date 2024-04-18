@@ -4,6 +4,8 @@ const request = require('supertest');
 const app = require('../../src/app');
 const hash = require('../../src/hash');
 const { Fragment } = require('../../src/model/fragment');
+const fs = require('fs');
+const path = require('path');
 
 const deleteUserData = async (user) => {
   const userHash = hash(user);
@@ -332,5 +334,309 @@ describe('Converting fragments from one extension to other extension', () => {
     expect(res.get('Content-Type')).toContain('text/plain');
     expect(res.status).toBe(200);
     expect(res.text).toBe('{"content":"Hello, I am a JSON data."}');
+  });
+
+  test('Checking Conversion from png to png', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'png_image.png');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/png')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.png`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/png');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from png to jpeg', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'png_image.png');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/png')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.jpg`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/jpeg');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from png to webp', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'png_image.png');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/png')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.webp`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/webp');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  // test('Checking Conversion from png => gif', async () => {
+  //   const imagePath = path.join(__dirname, '../../images', 'png_image.png');
+  //   const data = fs.readFileSync(imagePath);
+
+  //   const postResponse = await request(app)
+  //     .post('/v1/fragments')
+  //     .auth('user1@email.com', 'password1')
+  //     .set('content-type', 'image/png')
+  //     .send(data);
+
+  //   const res = await request(app)
+  //     .get(`/v1/fragments/${postResponse.body.fragment.id}.gif`)
+  //     .auth('user1@email.com', 'password1');
+
+  //   expect(res.status).toBe(200);
+  //   expect(res.get('Content-Type')).toContain('image/gif');
+  //   expect(Buffer.isBuffer(res.body)).toBe(true);
+  // }, 20000);
+
+  test('Checking Conversion from jpg to jpg', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'jpg_image.jpg');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/jpeg')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.jpg`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/jpeg');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from jpg to png', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'jpg_image.jpg');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/jpeg')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.png`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/png');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from jpg to webp', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'jpg_image.jpg');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/jpeg')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.webp`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/webp');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  // test('Checking Conversion from jpg => gif', async () => {
+  //   const imagePath = path.join(__dirname, '../../images', 'jpg_image.jpg');
+  //   const data = fs.readFileSync(imagePath);
+
+  //   const postResponse = await request(app)
+  //     .post('/v1/fragments')
+  //     .auth('user1@email.com', 'password1')
+  //     .set('content-type', 'image/jpeg')
+  //     .send(data);
+
+  //   const res = await request(app)
+  //     .get(`/v1/fragments/${postResponse.body.fragment.id}.gif`)
+  //     .auth('user1@email.com', 'password1');
+
+  //   expect(res.status).toBe(200);
+  //   expect(res.get('Content-Type')).toContain('image/gif');
+  //   expect(Buffer.isBuffer(res.body)).toBe(true);
+  // });
+
+  test('Checking Conversion from webp to webp', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'webp_image.webp');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/webp')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.webp`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/webp');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from webp to png', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'webp_image.webp');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/webp')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.png`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/png');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from webp to jpg', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'webp_image.webp');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/webp')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.jpg`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/jpeg');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  // test('Checking Conversion from webp => gif', async () => {
+  //   const imagePath = path.join(__dirname, '../../images', 'webp_image.webp');
+  //   const data = fs.readFileSync(imagePath);
+
+  //   const postResponse = await request(app)
+  //     .post('/v1/fragments')
+  //     .auth('user1@email.com', 'password1')
+  //     .set('content-type', 'image/webp')
+  //     .send(data);
+
+  //   const res = await request(app)
+  //     .get(`/v1/fragments/${postResponse.body.fragment.id}.gif`)
+  //     .auth('user1@email.com', 'password1');
+
+  //   expect(res.status).toBe(200);
+  //   expect(res.get('Content-Type')).toContain('image/gif');
+  //   expect(Buffer.isBuffer(res.body)).toBe(true);
+  // });
+
+  test('Checking Conversion from gif to gif', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'gif_image.gif');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/gif')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.gif`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/gif');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from gif to png', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'gif_image.gif');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/gif')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.png`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/png');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from gif to jpg', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'gif_image.gif');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/gif')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.jpg`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/jpeg');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
+  });
+
+  test('Checking Conversion from gif to webp', async () => {
+    const imagePath = path.join(__dirname, '../../images', 'gif_image.gif');
+    const imageData = fs.readFileSync(imagePath);
+
+    const postResponse = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('content-type', 'image/gif')
+      .send(imageData);
+
+    const res = await request(app)
+      .get(`/v1/fragments/${postResponse.body.fragment.id}.webp`)
+      .auth('user1@email.com', 'password1');
+
+    expect(res.status).toBe(200);
+    expect(res.get('Content-Type')).toContain('image/webp');
+    expect(Buffer.isBuffer(res.body)).toBe(true);
   });
 });

@@ -48,7 +48,7 @@ describe('Testing POST /v1/fragments endpoint', () => {
     expect(response.status).toBe(415);
     // Check if the response body contains an error object
     expect(response.body.error).toBeDefined();
-    expect(response.body.error.status).toBe('error');
+    expect(response.body.status).toBe('error');
   });
 
   test('Successful response should include status and a fragment object', async () => {
