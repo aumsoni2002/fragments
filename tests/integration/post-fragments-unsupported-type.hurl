@@ -14,5 +14,5 @@ Aum,Soni
 HTTP/1.1 415
 
 [Asserts]
-jsonpath "$.error.status" == "error"
-jsonpath "$.error.message" == "Unsupported Content-Type"
+jsonpath "$.status" == "error"
+jsonpath "$.error.message" == "Unsupported content type"
